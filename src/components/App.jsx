@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState } from 'react';
 
 import Feedback from './Feedback/Feedback';
 import Notification from './Notification/Notification';
@@ -7,68 +7,76 @@ import Section from './Section/Section';
 
 import css from '../components/App.module.css';
 
+const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  // state = {
+  //   good: 0,
+  //   neutral: 0,
+  //   bad: 0
+  // }
 
- class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0
-  }
-  onLeaveFeedback = (e) => {
-    const currentBtnValue = e.target.value;
-    this.setState(prevState => ({
-      ...prevState,
-       [currentBtnValue]: prevState[currentBtnValue] + 1,
-       }))
-  }
-  countTotal = () => {
+  const onLeaveFeedback = e => {
+    switch (e.target.id) {
+      case 'good':
+        setGood(good + 1);
+        break;
+      case 'neutral':
+        setNeutral(neutral + 1);
+        break;
+      case 'bad':
+        setBad(bad + 1);
+        break;
+      default:
+        console.log('Unknown id');
+        break;
+    }
+  };
 
-    const valuesArr = Object.values(this.state);
+  const countTotal = () => good + neutral + bad;
+ 
 
-    return valuesArr.reduce((total, value) => {
-      return (total += value);
-    }, 0);
-  }
+  const countPercentage = () => {
+    return (good / countTotal()) * 100;
+  };
 
-countPercentage = () => {
-
-  return Math.round((this.state.good / this.countTotal()) * 100);
-
-}
-
-isFeedBack = () => {
-  if(this.countTotal() === 0){
-    return false;
-  }else{
-    return true;
-  }
+  const isFeedBack = () => {
+    if (countTotal() === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+  return (
+    <>
+      <div className={css.section}>
+        <Section title="Please leave feedback">
+          <Feedback
+            options={[
+              { id: 'good', name: 'Good' },
+              { id: 'neutral', name: 'Neutral' },
+              { id: 'bad', name: 'Bad' },
+            ]}
+            onLeaveFeedback={onLeaveFeedback}
+          />
+        </Section>
+        {isFeedBack() ? (
+          <Section title="Statistics">
+            <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={countTotal()}
+              positivePercentage={countPercentage()}
+            />
+          </Section>
+        ) : (
+          <Notification message="No feedback given" />
+        )}
+      </div>
+    </>
+  );
 };
 
-  render(){
-  
-   const btnName = Object.keys(this.state)
-    return (
-      <>
-      <div className={css.section}>
-        <Section title='Please leave feedback'>
-      <Feedback options ={btnName} onLeaveFeedback={this.onLeaveFeedback}
-      />
-      </Section>
-      {this.isFeedBack() ? (
-    <Section title='Statistics' >
-       <Statistics 
-        stat={this.state}
-        total={this.countTotal()}
-        positiveFeedback={this.countPercentage()}/>
-    </Section>
-       
-      ) : (
-        <Notification message='No feedback given'/>
-      )}
-      </div>
-      </>
-    );
-  }
- };
- export default App;
-  
+export default App;

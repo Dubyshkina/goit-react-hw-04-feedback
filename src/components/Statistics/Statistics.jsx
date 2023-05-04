@@ -1,45 +1,33 @@
-import { Component } from 'react';
 
 import css from '../Statistics/Statistics.module.css';
 import PropTypes from 'prop-types';
 
-class Statistics extends Component {
-  static defaultProps = {
-    stat: { good: 0, bad: 0, neutral: 0 },
-    total: 0,
-    positiveFeedback: 0,
-  };
-
-  static propTypes = {
-    stat: PropTypes.object,
-    total: PropTypes.number,
-    positiveFeedback: PropTypes.number,
-  };
-
-  render() {
+const Statistics = ({
+  good,
+  neutral,
+  bad,
+  total,
+  positivePercentage,
+}) =>  {
     return (
       <div className={css.container__wrap}>
         <ul className={css.stat__list}>
-          {Object.entries(this.props.stat).map(([key, value]) => {
-            return (
-              <li key={key} className={css.stat__item}>
-                <span>{key}: </span>
-                <span>{value}</span>
-              </li>
-            );
-          })}
-          <li className={css.stat__item}>
-            <span>Total: </span>
-            <span>{this.props.total}</span>
-          </li>
-          <li className={css.stat__item}>
-            <span>Positive feedback: </span>
-            <span>{this.props.positiveFeedback}%</span>
-          </li>
+        <li className={css.stat__item}>Good: {good}</li>
+        <li className={css.stat__item}>Neutral: {neutral}</li>
+        <li className={css.stat__item}>Bad: {bad}</li>
+        <li className={css.stat__item}>Total: {total}</li>
+        <li className={css.stat__item}>Positive feedback: {positivePercentage.toFixed(0)}%</li>
         </ul>
       </div>
     );
   }
-}
+
+  Statistics.propTypes = {
+    good: PropTypes.number,
+    neutral: PropTypes.number,
+    bad: PropTypes.number,
+    total: PropTypes.number,
+    positivePercentage: PropTypes.number,
+  };
 
 export default Statistics;

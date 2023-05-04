@@ -1,6 +1,6 @@
 
 
-export const Section = ({ title, children }) => {
+const Section = ({ title, children }) => {
   return (
     <>
       <h2>{title}</h2>
